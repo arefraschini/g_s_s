@@ -1,0 +1,23 @@
+@charset "ISO-8859-1";
+body {font-family: Verdana, Geneva, Tahoma, sans-serif;}
+h3.infoMsg {border: 2px lightgreen solid; background-color: rgb(200, 200, 200); color: limegreen;
+	padding: 4px;}
+h3.errMsg {border: 2px crimson solid; background-color: rgb(200, 200, 200); color: red;
+	padding: 4px;}
+div.login {display: block;}
+div.login div.hldr {margin-bottom: 10px;}
+div.login div.hldr span {text-align: right; width: 15%; margin-right: 20px;
+	display: inline-block;}
+div.teamsAndPlayers {display: flex;}
+div.teamsAndPlayers div.teams {width: 40%; display: inline-block;}
+div.teamsAndPlayers div.players {width: 40%; display: inline-block;}
+div.newTeam, div.newGame  {border: 2px solid forestgreen; margin: 10px; display: block;}
+div.newTeam div span, div.newGame div span {display: inline-block; width: 90%;}
+div.header {font-weight: bold; font-style: italic;}
+div.newGame {border: 2px solid cadetblue;}
+div.hidden {display: none;}
+
+div.team {display: flex; border-left-width: 3px; border-left-style: solid; margin-top: 5px;
+	margin-left: 5px; margin-right: 5px; padding-left: 5px; padding-right: 5px;}
+div.teamA {border-left-color: rgb(0, 128, 0); background-color: greenyellow;}
+div.teamB {border-left-color: orange; background-color: khaki;}
