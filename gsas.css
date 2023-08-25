@@ -14,6 +14,9 @@ div.teamsAndPlayers div.players {width: 40%; display: inline-block;}
 div.newTeam, div.newGame  {border: 2px solid forestgreen; margin: 10px; display: block;}
 div.newTeam div span, div.newGame div span {display: inline-block; width: 90%;}
 div.header {font-weight: bold; font-style: italic;}
+div.gamesTools {display: block;}
+div.gamesTools input {margin-right: 10px; background-color: lightsteelblue; border-color: orange;}
+div.gamesTools input:hover {background-color: dodgerblue; color: darkblue;}
 div.newGame {border: 2px solid cadetblue;}
 div.hidden {display: none;}
 

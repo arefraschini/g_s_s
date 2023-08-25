@@ -7,7 +7,7 @@ session_start();
 <link type="text/css" rel="stylesheet" href="gsas.css" />
 </head>
 <body>
-<h2>Game scorer and viewer | <?php echo "abc123" . session_id() ?></h2>
+<h2>Game scorer and viewer</h2>
 <?php
 var_dump($_SESSION);
 

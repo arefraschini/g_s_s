@@ -22,6 +22,16 @@ include "./include/db.php";
 		}
 	};
 
+	function manageGame() {
+		var aSel = document.getElementById("games");
+		if (aSel == null || aSel.selectedIndex < 0) {
+			return;
+		}
+		var gameId = aSel.options[aSel.selectedIndex].value;
+		var gameName = aSel.options[aSel.selectedIndex].text;
+		alert(gameId + "<|>" + gameName);
+	}
+
 	function fillPlayers(aSel) {
 		if (aSel == null) {
 			return;
@@ -38,10 +48,11 @@ include "./include/db.php";
 			if (xmlhttp.readyState == XMLHttpRequest.DONE) { // XMLHttpRequest.DONE == 4
 				if (xmlhttp.status == 200) {
 					// Read JSon data
-					alert(xmlhttp.responseText);
 					var txt = xmlhttp.responseText;
+					/*
 					var pos = txt.indexOf('}', 20);
 					alert (txt.substring(pos + 1).trim());
+					*/
 					var jPlayers = JSON.parse(txt);
 					var listText = jPlayers.length > 0 ? "" : "<option> -- Nessun giocatore trovato --</option>";;
 					for (var i = 0; i < jPlayers.length; i++) {
@@ -61,9 +72,9 @@ include "./include/db.php";
 
 		xmlhttp.open("POST", "aj.php", true);
 		xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-		xmlhttp.send("readPlayersTeamId=" + teamId);
+		xmlhttp.send(JSON.stringify({"readPlayersTeamId": teamId}));
 		return;
-	}
+	};
 
 	function saveNewPlayer() {
 		var teamId = document.getElementById("teamIdForNewPlayer").value;
@@ -76,8 +87,21 @@ include "./include/db.php";
 					// Read JSon data
 					var resp = JSON.parse(xmlhttp.responseText);
 					var currHeader = document.getElementById("newPlayerHeaderId");
-					currHeader.innerHTML = currHeader.innerHTML + " &ndash; " + resp.msg;
+					currHeader.innerHTML = "New player" + " &ndash; " + resp.msg;
 					currHeader.style.color = resp.isOk == "N" ? "red" : "green";
+					if (resp.isOk != "N") {
+						var num = document.getElementById("newNumber");
+						var name = document.getElementById("newName");
+						var surname = document.getElementById("newSurname");
+						var toAdd = "<option code='" + resp.maxId + "'>"
+									+ "#" + num.value + " &ndash; "
+									+ surname.value + ", " + name.value + "</option>";
+						document.getElementById("playersOfTeam").innerHTML =
+							document.getElementById("playersOfTeam").innerHTML + toAdd;
+						num.value = "";
+						name.value = "";
+						surname.value = "";
+					}
 				} else if (xmlhttp.status == 400) {
 					alert('There was an error 400');
 				} else {
@@ -103,48 +127,48 @@ include "./include/db.php";
 //		var newData = "playerTeamId=" + teamId + "&newNumber=" + newNumber + "&newName" + newName + "&newSurname=" + newSurname + "&saveNewPlayer=yess";
 		xmlhttp.send(newData);
 		return;
-	}
+	};
 </script>
 </head>
 <body>
-<h2>Game scorer and viewer | Home page | <?php echo session_id() ?></h2>
+<h2>Game scorer and viewer | Home page</h2>
 <?php
 	echo "#<br>";
 	var_dump($_SESSION);
 	if (isset($_SESSION['message'])) {
-	    $message = $_SESSION['message'];
-	    ?>
+		$message = $_SESSION['message'];
+		?>
 		<h3 class="infoMsg"><?php echo $message ?></h3>
 <?php
 	}
 	if (isset($_SESSION['errMessage'])) {
-	    $errMessage = $_SESSION['errMessage'];
-	    ?>
+		$errMessage = $_SESSION['errMessage'];
+		?>
 		<h3 class="errMsg"><?php echo $errMessage ?></h3>
 <?php
 	}
 	$dbConn=getConnection($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 
 	if (isset($_POST) && (isset($_POST["saveNewTeam"]) || isset($_POST["saveNewGame"]))) {
-	    if (isset($_POST["saveNewTeam"])) {
-	        $teamName = mysqli_real_escape_string($dbConn, $_POST["teamName"]);
-	        $championship = mysqli_real_escape_string($dbConn, $_POST["championship"]);
-	        $teamPlace = mysqli_real_escape_string($dbConn, $_POST["teamPlace"]);
-	        $sqlTeam = "INSERT INTO teams (nomeTeam, campionato, citta) VALUES ('" . $teamName . "', '" . $championship . "', '" . $teamPlace . "');";
-	        $dbConn->query($sqlTeam);
-	    } else  if (isset($_POST["saveNewGame"])) {
-	        $teamA = $_POST["teamsA"];
-	        $teamB = $_POST["teamsB"];
-	        $gamePlace = mysqli_real_escape_string($dbConn, $_POST["gamePlace"]);
-	        $gameDetails = mysqli_real_escape_string($dbConn, $_POST["gameDetails"]);
-	        $gameDate = $_POST["gameDate"];
-	        $gameTime = $_POST["gameTime"];
-	        $gameKey = substr(md5(rand()), 0, 7);;
-	        $sqlGame = "INSERT INTO games (gameCode, teamA, teamB, gameDate, gameTime, gamePlace, gamePlaceDetails) VALUES ('"
-		                  . $gameKey . "', " . $teamA . ", " . $teamB . ", '" . $gameDate . "', '" . $gameTime
-	                       . "', '" . $gamePlace . "', '" . $gameDetails . "');";
-	        $dbConn->query($sqlGame);
-	    }
+		if (isset($_POST["saveNewTeam"])) {
+			$teamName = mysqli_real_escape_string($dbConn, $_POST["teamName"]);
+			$championship = mysqli_real_escape_string($dbConn, $_POST["championship"]);
+			$teamPlace = mysqli_real_escape_string($dbConn, $_POST["teamPlace"]);
+			$sqlTeam = "INSERT INTO teams (nomeTeam, campionato, citta) VALUES ('" . $teamName . "', '" . $championship . "', '" . $teamPlace . "');";
+			$dbConn->query($sqlTeam);
+		} else  if (isset($_POST["saveNewGame"])) {
+			$teamA = $_POST["teamsA"];
+			$teamB = $_POST["teamsB"];
+			$gamePlace = mysqli_real_escape_string($dbConn, $_POST["gamePlace"]);
+			$gameDetails = mysqli_real_escape_string($dbConn, $_POST["gameDetails"]);
+			$gameDate = $_POST["gameDate"];
+			$gameTime = $_POST["gameTime"];
+			$gameKey = substr(md5(rand()), 0, 7);;
+			$sqlGame = "INSERT INTO games (gameCode, teamA, teamB, gameDate, gameTime, gamePlace, gamePlaceDetails) VALUES ('"
+						  . $gameKey . "', " . $teamA . ", " . $teamB . ", '" . $gameDate . "', '" . $gameTime
+						   . "', '" . $gamePlace . "', '" . $gameDetails . "');";
+			$dbConn->query($sqlGame);
+		}
 	}
 ?>
 <p>HOME PAGE</p>
@@ -182,17 +206,15 @@ include "./include/db.php";
 		<option> -- Nessuna squadra selezionata --</option>
 	</select>
 	<div class="newPlayer">
-		<form method="POST" action="<?php echo $_SERVER["PHP_SELF"] ?>">
-			<input type="hidden" name="teamIdForNewPlayer" id="teamIdForNewPlayer"/>
-			<div class="header" id="newPlayerHeaderId">New player</div>
-			<div># &ndash; Cognome &ndash; Nome</div>
-			<div>
-				<input type="text" name="newNumber" id="newNumber" maxlength="2" size="3" placeholder="#"/> &ndash;
-				<input type="text" name="newSurname" id="newSurname" maxlength="50" size="20" placeholder="Player surname"/> &ndash;
-				<input type="text" name="newName" id="newName" maxlength="50" size="20" placeholder="Player name"/>
-				<div><input type="button" name="saveNewPlayer" value="Save player" onclick="saveNewPlayer()"/></div>
-			</div>
-		</form>
+		<input type="hidden" name="teamIdForNewPlayer" id="teamIdForNewPlayer"/>
+		<div class="header" id="newPlayerHeaderId">New player</div>
+		<div># &ndash; Cognome &ndash; Nome</div>
+		<div>
+			<input type="text" name="newNumber" id="newNumber" maxlength="2" size="3" placeholder="#"/> &ndash;
+			<input type="text" name="newSurname" id="newSurname" maxlength="50" size="20" placeholder="Player surname"/> &ndash;
+			<input type="text" name="newName" id="newName" maxlength="50" size="20" placeholder="Player name"/>
+			<div><input type="button" name="saveNewPlayer" value="Save player" onclick="saveNewPlayer();"/></div>
+		</div>
 	</div>
 </div>
 </div>
@@ -211,57 +233,59 @@ include "./include/db.php";
 		$descTa = $resSet["tAnomeTeam"] . " - " . $resSet["tAcampionato"] . " (" . $resSet["tAcitta"] . ")";
 		$descTb = $resSet["tBnomeTeam"] . " - " . $resSet["tBcampionato"] . " (" . $resSet["tBcitta"] . ")";
 		$desc = $descTa . " vs " . $descTb . " @" . $resSet["gamePlace"] . " | " . $resSet["gameDate"];
-	       ?><option value="<?php echo $resSet["gameId"] ?>"><?php echo $desc ?></option><?php
+		   ?><option value="<?php echo $resSet["gameId"] ?>"><?php echo $desc ?></option><?php
 		}
 		?>
 		</select><?php
+	} else {
+		?>Nessuna partita in calendario<?php
 	}
-?><input type="button" value="Aggiungi partita" onclick="showAddGame();"/>
+?><div class="gamesTools" id="gamesTools"><input type="button" id="addGame" value="Aggiungi partita" onclick="showAddGame();"/><input type="button" id="manageGame" value="Gestisci partita" onclick="manageGame();"/></div>
 <div class="newGame hidden" id="newGameId">
-    <form method="POST" action="<?php echo $_SERVER["PHP_SELF"] ?>">
-    	<div class="header">Inserisci nuova partita</div>
-    	<div class="team teamA">
-    		<span>Squadra A</span>
-    		<span>
-        	<?php
-        	$result = $dbConn->query("SELECT * FROM teams ORDER BY nomeTeam, campionato, citta");
-        	if ($result->num_rows > 0) {?>
-        		<select id="teamsA" name="teamsA" size="5">
-        	<?php
-        		while ($resSet = $result->fetch_assoc()) {;
-        		$desc = $resSet["nomeTeam"] . " - " . $resSet["campionato"] . " (" . $resSet["citta"] . ")";
-        		?><option value="<?php echo $resSet["teamId"] ?>"><?php echo $desc ?></option><?php
-        		} ?>
-        		</select>
-        	<?php } ?>
-    		</span>
-    	</div>
-    	<div class="team teamB">
-    		<span>Squadra B</span>
-    		<span>
-        	<?php
-        	// Mi rimetto sul primo elemento per rileggere i dati
-        	$result->data_seek(0);
-        	if ($result->num_rows > 0) {?>
-        		<select id="teamsB" name="teamsB" size="5">
-        	<?php
-        		while ($resSet = $result->fetch_assoc()) {;
-        		$desc = $resSet["nomeTeam"] . " - " . $resSet["campionato"] . " (" . $resSet["citta"] . ")";
-        		?><option value="<?php echo $resSet["teamId"] ?>"><?php echo $desc ?></option><?php
-        		} ?>
-        		</select>
-        	<?php }
-        	$result->free_result();
-        	$dbConn->close();
-	       ?>
-    		</span>
-    	</div>
-    	<div><span>Localit&agrave;</span><span><input type="text" name="gamePlace" placeholder="Localit&agrave; dell'incontro" maxlength="100"/></span></div>
-    	<div><span>Dettagli (palestra, indirizzo, ...)</span><span><input type="text" name="gameDetails" placeholder="Dettagli dell'incontro" maxlength="100"/></span></div>
-    	<div><span>dt</span><span><input type="date" name="gameDate" placeholder="gg/mm/aaaa" maxlength="50"/></span></div>
-    	<div><span>hr</span><span><input type="time" name="gameTime" placeholder="hh:MM" maxlength="50"/></span></div>
-    	<div><input type="submit" name="saveNewGame" value="Salva partita"/></div>
-    </form>
+	<form method="POST" action="<?php echo $_SERVER["PHP_SELF"] ?>">
+		<div class="header">Inserisci nuova partita</div>
+		<div class="team teamA">
+			<span>Squadra A</span>
+			<span>
+			<?php
+			$result = $dbConn->query("SELECT * FROM teams ORDER BY nomeTeam, campionato, citta");
+			if ($result->num_rows > 0) {?>
+				<select id="teamsA" name="teamsA" size="5">
+			<?php
+				while ($resSet = $result->fetch_assoc()) {;
+				$desc = $resSet["nomeTeam"] . " - " . $resSet["campionato"] . " (" . $resSet["citta"] . ")";
+				?><option value="<?php echo $resSet["teamId"] ?>"><?php echo $desc ?></option><?php
+				} ?>
+				</select>
+			<?php } ?>
+			</span>
+		</div>
+		<div class="team teamB">
+			<span>Squadra B</span>
+			<span>
+			<?php
+			// Mi rimetto sul primo elemento per rileggere i dati
+			$result->data_seek(0);
+			if ($result->num_rows > 0) {?>
+				<select id="teamsB" name="teamsB" size="5">
+			<?php
+				while ($resSet = $result->fetch_assoc()) {;
+				$desc = $resSet["nomeTeam"] . " - " . $resSet["campionato"] . " (" . $resSet["citta"] . ")";
+				?><option value="<?php echo $resSet["teamId"] ?>"><?php echo $desc ?></option><?php
+				} ?>
+				</select>
+			<?php }
+			$result->free_result();
+			$dbConn->close();
+		   ?>
+			</span>
+		</div>
+		<div><span>Localit&agrave;</span><span><input type="text" name="gamePlace" placeholder="Localit&agrave; dell'incontro" maxlength="100"/></span></div>
+		<div><span>Dettagli (palestra, indirizzo, ...)</span><span><input type="text" name="gameDetails" placeholder="Dettagli dell'incontro" maxlength="100"/></span></div>
+		<div><span>dt</span><span><input type="date" name="gameDate" placeholder="gg/mm/aaaa" maxlength="50"/></span></div>
+		<div><span>hr</span><span><input type="time" name="gameTime" placeholder="hh:MM" maxlength="50"/></span></div>
+		<div><input type="submit" name="saveNewGame" value="Salva partita"/></div>
+	</form>
 </div>
 </body>
 </html>
