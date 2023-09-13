@@ -53,18 +53,3 @@ if ( isset($_POST["action"]) && $_POST["action"] == "login") {
 
 header("/");
 ?>
-<h1>Game scorer and see | anagraphic data</h1>
-<p>Elenco squadre registrate</p>
-<?php
-	$result = $dbConn->query("SELECT * FROM teams");
-	if ($result->num_rows == 0) {
-			?><a href="">>Registra squadra</a><?php
-	}
-?>
-<p>Elenco partite disponibili</p>
-<?php
-	$result = $dbConn->query("SELECT * FROM games WHERE gameDate >= CURDATE()");
-	if ($result->num_rows == 0) {
-			?><a href="">>Aggiungi partita</a><?php
-	}
-?>

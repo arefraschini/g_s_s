@@ -24,7 +24,7 @@ if (isset($data) && (isset($data["saveNewPlayer"]) || isset($data["readPlayersTe
 				$maxId = $resSet["maxId"];
 				$feedbackData = array("isOk"=>"Y", "msg"=>"Saved!", "maxId"=>$maxId);
 			} else {
-				$feedbackData = array("isOk"=>"N", "msg"=>"NOT SAVED - err: " . $dbConn->errorno);
+				$feedbackData = array("isOk"=>"N", "msg"=>"NOT SAVED - err: " . $dbConn->error. "SQL=".$sqlPlayer);
 			}
 			echo (json_encode($feedbackData));
 			exit;

@@ -22,14 +22,17 @@ include "./include/db.php";
 		}
 	};
 
-	function manageGame() {
+	function manageGame(anAnchor) {
 		var aSel = document.getElementById("games");
 		if (aSel == null || aSel.selectedIndex < 0) {
-			return;
+			alert("Nessuna partita selezionata");
+			return false;
 		}
 		var gameId = aSel.options[aSel.selectedIndex].value;
-		var gameName = aSel.options[aSel.selectedIndex].text;
-		alert(gameId + "<|>" + gameName);
+		anAnchor.href = "./doPrepareToScore.php?gameId=" + gameId;
+//		var gameName = aSel.options[aSel.selectedIndex].text;
+//		alert(gameId + "<|>" + gameName);
+		return true;
 	}
 
 	function fillPlayers(aSel) {
@@ -240,7 +243,7 @@ include "./include/db.php";
 	} else {
 		?>Nessuna partita in calendario<?php
 	}
-?><div class="gamesTools" id="gamesTools"><input type="button" id="addGame" value="Aggiungi partita" onclick="showAddGame();"/><input type="button" id="manageGame" value="Gestisci partita" onclick="manageGame();"/></div>
+?><div class="gamesTools" id="gamesTools"><input type="button" id="addGame" value="Aggiungi partita" onclick="showAddGame();"/><a href="button" id="manageGame" onclick="return manageGame(this);">Gestisci partita</a></div>
 <div class="newGame hidden" id="newGameId">
 	<form method="POST" action="<?php echo $_SERVER["PHP_SELF"] ?>">
 		<div class="header">Inserisci nuova partita</div>
@@ -287,6 +290,6 @@ include "./include/db.php";
 		<div><input type="submit" name="saveNewGame" value="Salva partita"/></div>
 	</form>
 </div>
+<?php include "./include/footer.php" ?>
 </body>
 </html>
-<?php include "./include/footer.php" ?>
