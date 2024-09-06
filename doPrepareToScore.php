@@ -5,7 +5,7 @@ include "./include/db.php";
 
 $gameId = 0;
 if (isset($_GET['gameId'])) {
-	$gameId= $_GET['gameId'];
+	$gameId = $_GET['gameId'];
 } else {
 	exit;
 }
@@ -24,9 +24,12 @@ if ($result->num_rows > 0) {
 	$tA = $resSet["tAnomeTeam"] . " - " . $resSet["tAcampionato"];
 	$tB = $resSet["tBnomeTeam"] . " - " . $resSet["tBcampionato"];
 	$gameName = $tA . " vs. " . $tB;
+	$status = $resSet["stato"];
+} else {
+	exit;
 }
-$sqlTa = "SELECT playerId, cognome, nome, numeroMaglia FROM players WHERE teamId = " . $tAid;
-$sqlTb = "SELECT playerId, cognome, nome, numeroMaglia FROM players WHERE teamId = " . $tBid;
+$sqlTa = "SELECT playerId, cognome, nome, numeroMaglia FROM players WHERE teamId = " . $tAid . " ORDER BY numeroMaglia;";
+$sqlTb = "SELECT playerId, cognome, nome, numeroMaglia FROM players WHERE teamId = " . $tBid . " ORDER BY numeroMaglia;";
 $resTa = $dbConn->query($sqlTa);
 $resTb = $dbConn->query($sqlTb);
 ?>
@@ -117,17 +120,52 @@ $resTb = $dbConn->query($sqlTb);
 				}
 			}
 		}
+
+		function setPlayersForGame(aGameId, idTeamA, idTeamB, status) {
+			// giocatori A
+			var tAplayers = document.getElementById("teamASel").selectedOptions;
+			var aCodes = "" + tAplayers[0].value;
+			for (var i = 1; i < tAplayers.length; i++) {
+				aCodes = aCodes + ", " + tAplayers[i].value;
+			}
+			// giocatori B
+			var tBplayers = document.getElementById("teamBSel").selectedOptions;
+			var bCodes = "" + tBplayers[0].value;
+			for (var i = 1; i < tBplayers.length; i++) {
+				bCodes = bCodes + ", " + tBplayers[i].value;
+			}
+			// Send POST to "doScore" page
+			var frm = document.createElement("form");
+			newInput("trgr", "yess", frm);
+			newInput("gameId", aGameId, frm);
+			newInput("aTeamId", idTeamA, frm);
+			newInput("bTeamId", idTeamB, frm);
+			newInput("gameStatus", status, frm);
+			newInput("aPlayers", aCodes, frm);
+			newInput("bPlayers", bCodes, frm);
+			frm.method = "POST";
+			frm.action = "doScore.php";
+			document.body.appendChild(frm);
+			frm.submit();
+		}
+
+		function newInput(aName, aValue, aForm) {
+			var anInpt = document.createElement("input");
+			anInpt.name = aName;
+			anInpt.value = aValue;
+			aForm.appendChild(anInpt);
+		}
 	</script>
 </head>
 <body>
-	<div>Score the game<br/><?php echo $gameName ?></div>
+	<div>Score the game<br/><?php echo $gameName ?><span class="goBack"><a href="./home.php" id="backToManagement">Torna indietro</a></span></div>
 	<p class="subtitle">Selezionare i giocatori (aggiungere eventualmente i mancanti) e confermare per procedere</p>
 	<div id="teams">
 		<div id="teamADiv">
 			<span><?php echo $tA ?></span>
 			<select id="teamASel" size="12" onChange="calcSelected(this, '_A')" multiple="multiple">
 				<?php
-				while ($resSet = $resTa->fetch_assoc()) {;
+				while ($resSet = $resTa->fetch_assoc()) {
 					$desc = $resSet["numeroMaglia"] . " - " . $resSet["cognome"] . ", " . $resSet["nome"];
 				?>
 				<option value="<?php echo $resSet["playerId"] ?>"><?php echo $desc ?></option>
@@ -174,7 +212,7 @@ $resTb = $dbConn->query($sqlTb);
 			<div id="confirm"><p><span>Giocatori selezionati: </span><span id="selectedPlayers_B"> - - </span></p><p><label for="selectionIsOK_B">Confermo selezione</label><input type="checkbox" id="selectionIsOK_B" onClick="enableStartScoreBtn('B', this.checked)"/></p></div>
 		</div>
 	</div>
-	<p class="tool">Se le formazioni sono corrette, premere il pulsante per procedere <input type="button" name="startScoreBtn" id="startScoreBtn" disabled="disabled" value="Avviare la rilevazione"/></p>
+	<p class="tool">Se le formazioni sono corrette, premere il pulsante per procedere <input type="button" name="startScoreBtn" id="startScoreBtn" disabled="disabled" value="Avviare la rilevazione" onClick="setPlayersForGame(<?php echo $gameId . ", " . $tAid . ", " . $tBid . ", '" . $status . "'" ?>)"/><span class="goBack"><a href="./home.php" id="backToManagement">Torna indietro</a></span></p>
 </body>
 </html>
 

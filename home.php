@@ -28,11 +28,38 @@ include "./include/db.php";
 			alert("Nessuna partita selezionata");
 			return false;
 		}
-		var gameId = aSel.options[aSel.selectedIndex].value;
-		anAnchor.href = "./doPrepareToScore.php?gameId=" + gameId;
-//		var gameName = aSel.options[aSel.selectedIndex].text;
-//		alert(gameId + "<|>" + gameName);
+		var tmp = aSel.options[aSel.selectedIndex].value.split("|");
+		var gameId = tmp[0];
+		var status = tmp[1];
+		if (status == 'N') {
+			anAnchor.href = "./doPrepareToScore.php?gameId=" + gameId;
+			return true;
+		} else {
+			// send POST to doScore.php
+			sendGameToScore(gameId, status);
+			// Devo bloccare il link
+			return false;
+		}
+	}
+
+	function sendGameToScore(aGameId, status) {
+		// Send POST to "doScore" page
+		var frm = document.createElement("form");
+		newInput("trgr", "yess", frm);
+		newInput("gameId", aGameId, frm);
+		newInput("gameStatus", status, frm);
+		frm.method = "POST";
+		frm.action = "doScore.php";
+		document.body.appendChild(frm);
+		frm.submit();
 		return true;
+	}
+
+	function newInput(aName, aValue, aForm) {
+		var anInpt = document.createElement("input");
+		anInpt.name = aName;
+		anInpt.value = aValue;
+		aForm.appendChild(anInpt);
 	}
 
 	function fillPlayers(aSel) {
@@ -233,10 +260,11 @@ include "./include/db.php";
 		<select id="games" name="games" size="10">
 		<?php
 		while ($resSet = $result->fetch_assoc()) {;
-		$descTa = $resSet["tAnomeTeam"] . " - " . $resSet["tAcampionato"] . " (" . $resSet["tAcitta"] . ")";
-		$descTb = $resSet["tBnomeTeam"] . " - " . $resSet["tBcampionato"] . " (" . $resSet["tBcitta"] . ")";
-		$desc = $descTa . " vs " . $descTb . " @" . $resSet["gamePlace"] . " | " . $resSet["gameDate"];
-		   ?><option value="<?php echo $resSet["gameId"] ?>"><?php echo $desc ?></option><?php
+			$descTa = $resSet["tAnomeTeam"] . " - " . $resSet["tAcampionato"] . " (" . $resSet["tAcitta"] . ")";
+			$descTb = $resSet["tBnomeTeam"] . " - " . $resSet["tBcampionato"] . " (" . $resSet["tBcitta"] . ")";
+			$desc = $descTa . " vs " . $descTb . " @" . $resSet["gamePlace"] . " | " . $resSet["gameDate"];
+			// Adding the status of the game to skip the player selection in case of already started game (stato = G)
+		   ?><option value="<?php echo $resSet["gameId"] . "|" . $resSet["stato"] ?>"><?php echo $desc ?></option><?php
 		}
 		?>
 		</select><?php

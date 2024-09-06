@@ -9,8 +9,10 @@ div.login div.hldr {margin-bottom: 10px;}
 div.login div.hldr span {text-align: right; width: 15%; margin-right: 20px;
 	display: inline-block;}
 div.teamsAndPlayers {display: flex;}
-div.teamsAndPlayers div.teams {width: 40%; display: inline-block;}
-div.teamsAndPlayers div.players {width: 40%; display: inline-block;}
+div.teamsAndPlayers div.teams {width: 40%; display: inline-block; padding: 5px;
+	background-color: blanchedalmond;}
+div.teamsAndPlayers div.players {width: 40%; display: inline-block; padding: 5px; margin-left: 5px;
+	background-color: antiquewhite;}
 div.newTeam, div.newGame  {border: 2px solid forestgreen; margin: 10px; display: block;}
 div.newTeam div span, div.newGame div span {display: inline-block; width: 90%;}
 div.header {font-weight: bold; font-style: italic;}
@@ -20,10 +22,36 @@ div.gamesTools input:hover {background-color: dodgerblue; color: darkblue;}
 div.newGame {border: 2px solid cadetblue;}
 div.hidden {display: none;}
 
+div.upperWholeScoreTable {display: flex; top: 0; position: sticky;width: 75%;}
+div.upperWholeScoreTable h2 {display: block;}
+div.wholeScoreTable {display: flex;}
 div.team {display: flex; border-left-width: 3px; border-left-style: solid; margin-top: 5px;
 	margin-left: 5px; margin-right: 5px; padding-left: 5px; padding-right: 5px;}
-div.teamA {border-left-color: rgb(0, 128, 0); background-color: greenyellow;}
-div.teamB {border-left-color: orange; background-color: khaki;}
+div.teamA {border-right: 4px solid rgb(0, 128, 0); background-color: greenyellow;}
+div.teamB {border-left: 4px solid orange; background-color: khaki;}
+div.score {display: flow-root; padding: 20px;}
+div.score p {font-weight: bold; text-align: center;}
+div.main {width: 20%;}
+div.main p.points {text-align: center;}
+div.main p.quarters span {margin: 0 4px;}
+div.main p.quarters span.active {color: crimson; background-color: lightpink; border: 2px solid orangered;
+	font-size: 1.2em; padding: 3px; border-radius: 4px;}
+div.main div.quarters {
+	display: flex;
+}
+div.scoreDx {float: right;}
+div.score ul {list-style-type: none; margin: 0; padding: 0;}
+div.score ul li {margin-top: 3px;
+	-webkit-box-shadow: 0px 2px 2px 0px rgba(164,171,184,1);
+	-moz-box-shadow: 0px 2px 2px 0px rgba(164,171,184,1);
+	box-shadow: 0px 2px 2px 0px rgba(164,171,184,1);}
+div.score ul li:hover {background-color: blanchedalmond; border-radius: 4px;}
+div.score ul li div.playerHeader div.onTheGround {display: inline-block; padding: 5px;}
+div.score ul li div.playerHeader span {display: inline-block; padding: 5px;}
+div.score ul li div.playerHeader span.points {border-radius: 5px; border: 2px solid dodgerblue; background-color: rgb(191, 223, 255);}
+div.score ul div.actions {display: block; padding: 5px;}
+div.score ul div.actions .ok, div.score ul div.onTheGround .ok {background-color: limegreen;}
+div.score ul div.actions .ko, div.score ul div.onTheGround .ko {background-color: orangered;}
 div.teams {width: 95%; background-color: lavender;}
 p.subtitle {display: block; width: 100%; font-size: 75%;}
 #teams {display: flex;}
@@ -35,3 +63,42 @@ p.subtitle {display: block; width: 100%; font-size: 75%;}
 #teamBDiv {margin-left: 4%;}
 #confirm p {display: block;}
 #confirm p span {display: inline;}
+span.goBack {float: right; border: 2px solid darkorange; background-color: lightgoldenrodyellow;
+	color: salmon; padding: 3px; font-size: 1em;}
+.dx {text-align: right;}
+div.overlay{opacity:0.95; background-color:#ccc; position:fixed;
+	width:100%; height:100%; top:0px;
+	left:0px; z-index:1000; display: none;
+	padding: 30px; text-align: center;}
+#detailsOverlay > div:nth-child(1) {border: 2px solid dodgerblue; width: 50%;}
+div.overlayHeader p {display: inline-block;}
+div.overlayHeader button {margin-left: 30px;}
+div.playerDetails {height: 90%; top: 5%; left: 5%;}
+div.playerDetails span.detHeader {font-size: 1.1em; box-shadow: 0 4px 2px -2px cornflowerblue; display: block;
+	margin-bottom: 5px;}
+div.playerDetails div.stats {margin-top: 5px; display: block; border-bottom: 2px solid skyblue;}
+div.playerDetails div.stats::before {content: ">";}
+div.playerDetails div.stats span {display: inline-block; width: 10%;}
+div.playerDetails div.stats span:first-child {text-align: left; width: 40%}
+div.playerDetails div.stats span:last-child {text-align: right;}
+#foulsPad {width: auto; display: block ruby;}
+#foulsPad div.foulType {display: inline-block; padding: 0 5px; pointer-events: none;}
+#foulsPad div.foulType span {pointer-events: auto; padding: 0 5px; width: auto;}
+#foulsPad div.foulType span:hover {color: dodgerblue; font-weight: bold;}
+/*#foulsPad div.foulType span:hover {cursor: pointer;}*/
+#foulsPad div.foulType:hover {cursor: pointer; background-color: paleturquoise;}
+
+/* follow-php rules */
+#gameTitle {font-weight: bold; color: red; text-align: center;}
+div.currentScore {font-family: monospace; align-items: center; display: flex;}
+div.currentScore span {border-width: 2px; border-style: solid; padding: 5px;}
+#homeScore {border-color: greenyellow;}
+#guestScore {border-color: orange;}
+div.teamLabels {display: block;}
+#homeTeamName {width:50%; text-align: left;}
+#guestTeamName {width:50%; text-align: right;}
+div.dataBox {display: block; border: 2px teal solid; padding: 5px;}
+div.homeData {background-color: lightcyan;}
+div.guestData {background-color: lemonchiffon;}
+#homeTeamData {}
+#guestTeamData {}
