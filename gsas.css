@@ -90,15 +90,20 @@ div.playerDetails div.stats span:last-child {text-align: right;}
 
 /* follow-php rules */
 #gameTitle {font-weight: bold; color: red; text-align: center;}
-div.currentScore {font-family: monospace; align-items: center; display: flex;}
-div.currentScore span {border-width: 2px; border-style: solid; padding: 5px;}
-#homeScore {border-color: greenyellow;}
-#guestScore {border-color: orange;}
-div.teamLabels {display: block;}
-#homeTeamName {width:50%; text-align: left;}
-#guestTeamName {width:50%; text-align: right;}
+div.currentScore {font-family: monospace; font-size: 3em; display: flex;
+	justify-content: center; font-weight: bolder; color: #396a93;}
+div.currentScore span {border-width: 2px; border-style: solid; padding: 5px;
+	border-radius: 0.5em;}
+#homeScore {border-color: royalblue; background-color: lightcyan;}
+#guestScore {border-color: orange; background-color: lemonchiffon;}
+div.teamLabels {display: flex; color: #396a93;}
+div.teamLabels span {padding: 5px 10px; border: 2px solid teal; border-bottom-style: hidden;
+	border-top-left-radius: 4px; border-top-right-radius: 4px; cursor: pointer;}
+#homeTeamName {border-color: royalblue; background-color: lightcyan;}
+#guestTeamName {border-color: orange; background-color: lemonchiffon; margin-left: auto;
+	opacity: 0.5;}
 div.dataBox {display: block; border: 2px teal solid; padding: 5px;}
-div.homeData {background-color: lightcyan;}
-div.guestData {background-color: lemonchiffon;}
-#homeTeamData {}
-#guestTeamData {}
+div.homeData {border-color: royalblue; background-color: lightcyan;}
+div.guestData {border-color: orange;; background-color: lemonchiffon;}
+#homeTeamData {display: block;}
+#guestTeamData {display: none;}
